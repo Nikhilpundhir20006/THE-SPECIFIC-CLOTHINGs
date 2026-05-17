@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Specific Clothing | Official Store</title>
+    <style>
+        :root { --brand-color: #222; --accent-color: #fb641b; --btn-blue: #2874f0; --star-color: #ffc107; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; background-color: #f1f3f6; }
+
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('1000286526.jpg'); background-repeat: no-repeat;
+            background-position: center; background-size: 40%; opacity: 0.05; z-index: -1;
+        }
+
+        header { background: #fff; padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: bold; border: 2px solid #000; padding: 5px 12px; font-size: 1.1rem; background: #fff; }
+
+        .container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+        .product-card { background: #fff; padding: 10px; border-radius: 4px; text-align: center; cursor: pointer; border: 1px solid #eee; position: relative; }
+        .product-card img { width: 100%; border-radius: 4px; height: 200px; object-fit: cover; }
+        .p-price { font-weight: bold; color: #212121; margin-top: 5px; font-size: 14px; }
+
+        .detail-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 2000; overflow-y: auto; }
+        .back-nav { padding: 15px; font-size: 20px; border-bottom: 1px solid #eee; cursor: pointer; background: #fff; position: sticky; top: 0; z-index: 10; }
+
+        .gallery-container { width: 100%; padding: 10px 0; text-align: center; }
+        .main-display-img { width: 100%; max-width: 400px; height: 450px; object-fit: cover; border-radius: 8px; }
+
+        .product-info-box { padding: 20px; background: #fff; }
+        .price-tag { font-size: 26px; font-weight: bold; color: #212121; margin: 10px 0; }
+        
+        .size-btns { display: flex; gap: 8px; margin: 10px 0 20px 0; }
+        .s-btn { border: 1px solid #ddd; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; background: #fff; }
+        .s-btn.selected { background: var(--btn-blue); color: #fff; border-color: var(--btn-blue); }
+
+        .feedback-form { margin-top: 30px; padding: 15px; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee; }
+        .feedback-form input, .feedback-form textarea, .feedback-form select { width: 100%; padding: 10px; margin-top: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .submit-rev-btn { background: #555; color: #fff; border: none; padding: 10px; width: 100%; margin-top: 10px; border-radius: 4px; font-weight: bold; }
+
+        .review-box { margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; text-align: left; }
+        .review-item { margin-bottom: 15px; border-bottom: 1px solid #f9f9f9; padding-bottom: 10px; }
+        .rev-name { font-weight: bold; font-size: 14px; display: block; }
+        .rev-stars { color: var(--star-color); font-size: 12px; }
+        .rev-text { font-size: 13px; color: #555; margin-top: 4px; display: block; }
+
+        .action-bar { position: sticky; bottom: 0; display: flex; width: 100%; background: #fff; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .btn-buy { flex: 1; background: var(--accent-color); color: #fff; padding: 18px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; }
+
+        .order-modal { display: none; position: fixed; bottom: 0; width: 100%; background: #fff; padding: 20px; border-radius: 20px 20px 0 0; z-index: 3000; box-sizing: border-box; box-shadow: 0 -5px 15px rgba(0,0,0,0.2); }
+        .input-box { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+
+        #qrContainer { display: none; text-align: center; margin-top: 15px; padding: 10px; background: #fefefe; border: 2px dashed #2874f0; border-radius: 8px; }
+        #qrContainer img { width: 200px; height: auto; margin-bottom: 5px; border-radius: 4px; }
+
+        footer { background: #222; color: #fff; text-align: center; padding: 30px 10px; margin-top: 20px; }
+        footer a { color: #fb641b; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">S<br><small>THE SPECIFIC</small></div>
+        <div style="font-weight: bold; font-size: 14px; color: var(--btn-blue);">☎ 9548486977</div>
+    </header>
+
+    <div class="container" id="mainGrid"></div>
+
+    <div id="detailView" class="detail-page">
+        <div class="back-nav" onclick="closeDetails()">← <span style="margin-left:10px;">Product Details</span></div>
+        <div class="gallery-container">
+            <img id="mainImage" class="main-display-img" src="">
+        </div>
+        <div class="product-info-box">
+            <h2 id="displayTitle" style="margin:0;"></h2>
+            <div id="displayPrice" class="price-tag"></div>
+            
+            <b>Select Size</b>
+            <div class="size-btns">
+                <div class="s-btn" onclick="selSize(this)">S</div>
+                <div class="s-btn" onclick="selSize(this)">M</div>
+                <div class="s-btn selected" onclick="selSize(this)">L</div>
+                <div class="s-btn" onclick="selSize(this)">XL</div>
+                <div class="s-btn" onclick="selSize(this)">XXL</div>
+            </div>
+
+            <div class="feedback-form">
+                <b>Write a Review</b>
+                <input type="text" id="revName" placeholder="Your Name">
+                <select id="revRating">
+                    <option value="★★★★★">5 Stars</option>
+                    <option value="★★★★☆">4 Stars</option>
+                    <option value="★★★☆☆">3 Stars</option>
+                </select>
+                <textarea id="revText" placeholder="Share your experience..."></textarea>
+                <button class="submit-rev-btn" onclick="addReview()">Submit Review</button>
+            </div>
+            <div class="review-box" id="reviewsContainer"></div>
+        </div>
+        <div class="action-bar">
+            <button class="btn-buy" onclick="document.getElementById('orderSheet').style.display='block'">BUY NOW</button>
+        </div>
+    </div>
+
+    <div id="orderSheet" class="order-modal">
+        <h3>Order Details</h3>
+        <input type="text" id="custName" class="input-box" placeholder="Customer Name">
+        <input type="tel" id="custPhone" class="input-box" placeholder="Mobile Number">
+        <textarea id="custAddr" class="input-box" rows="3" placeholder="Full Address"></textarea>
+        
+        <div style="margin-top: 10px;">
+            <b>Payment Method:</b>
+            <select id="payMethod" class="input-box" onchange="toggleQR(this.value)">
+                <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                <option value="Online Payment">Online Payment</option>
+            </select>
+        </div>
+
+        <div id="qrContainer">
+            <p style="font-weight: bold; color: #2874f0;">Scan QR to Pay ₹<span id="qrAmt">349</span></p>
+            <img src="file:///C:/Users/hp/Pictures/Screenshots/Screenshot%202026-05-17%20130546.png" alt="Payment QR">
+        </div>
+
+        <button class="btn-buy" style="width:100%; border-radius:6px; margin-top:10px;" onclick="sendWhatsAppOrder()">CONFIRM ON WHATSAPP</button>
+        <button onclick="this.parentElement.style.display='none'" style="width:100%; border:none; background:none; padding:15px; color:#878787;">Cancel</button>
+    </div>
+
+    <footer>
+        <p><strong>THE SPECIFIC CLOTHING</strong></p>
+        <p>Email: <a href="mailto:thespecificclothing@gmail.com">thespecificclothing@gmail.com</a></p>
+        <p>Contact: 9548486977 | Kasganj, UP</p>
+    </footer>
+
+    <script>
+        const products = [ 
+            { title: "Charcoal Geometric Kurti", price: "349", img: "file:///D:/New%20folder%20(2)/WhatsApp%20Image%202026-05-16%20at%209.04.36%20,,.jpeg", reviews: [{name: "Priya", star: "★★★★★", text: "Very unique print, loved it!"}] },
+            { title: "Yellow Ikat Kurti", price: "349", img: "file:///D:/New%20folder%20(2)/WhatsApp%20Image%202026-05-16%20at%209.04.42%20AM..jpeg", reviews: [{name: "Megha", star: "★★★★★", text: "Photo jaisa hai."}] },
+            { title: "Blue Ikat Kurti", price: "349", img: "file:///D:/New%20folder%20(2)/WhatsApp%20Image%202026-05-16%20at%209.04.53%20AM.jpeg", reviews: [{name: "Ritu", star: "★★★★☆", text: "Nice quality."}] },
+            { title: "Black Printed Kurti", price: "349", img: "file:///D:/New%20folder%20(2)/nikhil...jpeg", reviews: [{name: "Pooja", star: "★★★★★", text: "Beautiful print."}] },
+            { title: "White Floral Kurti", price: "349", img: "file:///D:/New%20folder%20(2)/WhatsApp%20Image%202026-05-16%20at%209.04.54%20AM.jpeg", reviews: [{name: "Anita", star: "★★★★★", text: "Elegant design."}] },
+            { title: "Maroon Kurti", price: "349", img: "file:///D:/New%20folder%20(2)/WhatsApp%20Image%202026-05-16%20at%209.04.36%20AMm.jpeg", reviews: [{name: "Rekha", star: "★★★★★", text: "Rich color."}] }
+        ];
+
+        let currentIdx = 0;
+        let selectedSize = "L";
+
+        function loadGrid() {
+            let html = '';
+            products.forEach((p, i) => {
+                html += `<div class="product-card" onclick="openDetails(${i})"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/200?text=Kurti'"><div class="p-price">${p.title} - ₹${p.price}</div></div>`;
+            });
+            document.getElementById('mainGrid').innerHTML = html;
+        }
+        loadGrid();
+
+        function openDetails(idx) {
+            currentIdx = idx;
+            const p = products[idx];
+            document.getElementById('displayTitle').innerText = p.title;
+            document.getElementById('displayPrice').innerText = "₹" + p.price;
+            document.getElementById('qrAmt').innerText = p.price;
+            document.getElementById('mainImage').src = p.img;
+            renderReviews();
+            document.getElementById('detailView').style.display = 'block';
+        }
+
+        function toggleQR(val) { document.getElementById('qrContainer').style.display = (val === 'Online Payment') ? 'block' : 'none'; }
+        function selSize(el) { document.querySelectorAll('.s-btn').forEach(b => b.classList.remove('selected')); el.classList.add('selected'); selectedSize = el.innerText; }
+
+        function renderReviews() {
+            let revHtml = '<b>Customer Reviews</b>';
+            products[currentIdx].reviews.forEach(r => {
+                revHtml += `<div class="review-item"><span class="rev-name">${r.name}</span><span class="rev-stars">${r.star}</span><span class="rev-text">${r.text}</span></div>`;
+            });
+            document.getElementById('reviewsContainer').innerHTML = revHtml;
+        }
+
+        function addReview() {
+            const name = document.getElementById('revName').value;
+            const star = document.getElementById('revRating').value;
+            const text = document.getElementById('revText').value;
+            if(!name || !text) { alert("Details fill karein!"); return; }
+            products[currentIdx].reviews.unshift({name, star, text});
+            renderReviews();
+            document.getElementById('revName').value = '';
+            document.getElementById('revText').value = '';
+        }
+
+        function closeDetails() { document.getElementById('detailView').style.display = 'none'; }
+        
+        function sendWhatsAppOrder() {
+            let name = document.getElementById('custName').value;
+            let phone = document.getElementById('custPhone').value;
+            let address = document.getElementById('custAddr').value;
+            let payment = document.getElementById('payMethod').value;
+            if(!name || !phone || !address) { alert("Details fill karein!"); return; }
+            
+            let msg = `*Naya Order Received!*%0A%0A*Kurti:* ${document.getElementById('displayTitle').innerText}%0A*Size:* ${selectedSize}%0A*Payment:* ${payment}%0A%0A*Customer:* ${name}%0A*Phone:* ${phone}%0A*Address:* ${address}`;
+            window.open(`https://wa.me/919548486977?text=${msg}`, '_blank');
+        }
+    </script>
+</body>
+</html>
